@@ -3,7 +3,6 @@ namespace MassTransit.Configuration
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Transports;
 
 
     public class ReceiverConfiguration :
@@ -36,7 +35,7 @@ namespace MassTransit.Configuration
             set { }
         }
 
-        public void AddDependency(IReceiveEndpointDependency dependent)
+        public void AddDependency(IReceiveEndpointDependentConnector dependent)
         {
         }
 
@@ -45,7 +44,7 @@ namespace MassTransit.Configuration
             return _configuration.ConnectReceiveEndpointObserver(observer);
         }
 
-        public void AddDependent(IReceiveEndpointDependent dependent)
+        public void AddDependent(IReceiveEndpointObserverConnector dependency)
         {
         }
 

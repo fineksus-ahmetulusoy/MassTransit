@@ -4,7 +4,6 @@ namespace MassTransit.KafkaIntegration.Configuration
     using System.Collections.Generic;
     using Confluent.Kafka;
     using MassTransit.Configuration;
-    using MassTransit.Middleware;
     using Middleware;
     using Serializers;
     using Transports;
@@ -236,7 +235,6 @@ namespace MassTransit.KafkaIntegration.Configuration
             if (_options.TryGetOptions(out KafkaTopicOptions options))
                 _consumerConfigurator.UseFilter(new ConfigureKafkaTopologyFilter<TKey, TValue>(_hostConfiguration.Configuration, options));
 
-            _consumerConfigurator.UseFilter(new ReceiveEndpointDependencyFilter<ConsumerContext>(context));
             _consumerConfigurator.UseFilter(new KafkaConsumerFilter<TKey, TValue>(context));
 
             IPipe<ConsumerContext> consumerPipe = _consumerConfigurator.Build();

@@ -3,8 +3,10 @@
     public class SqlServerLockStatementProvider :
         SqlLockStatementProvider
     {
+        const string DefaultSchemaName = "dbo";
+
         public SqlServerLockStatementProvider(bool enableSchemaCaching = true)
-            : base(new SqlServerLockStatementFormatter(), enableSchemaCaching)
+            : base(DefaultSchemaName, new SqlServerLockStatementFormatter(), enableSchemaCaching)
         {
         }
 

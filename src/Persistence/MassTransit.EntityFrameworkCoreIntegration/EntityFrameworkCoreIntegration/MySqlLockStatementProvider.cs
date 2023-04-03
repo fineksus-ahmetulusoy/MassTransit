@@ -4,7 +4,7 @@
         SqlLockStatementProvider
     {
         public MySqlLockStatementProvider(bool enableSchemaCaching = true)
-            : base(new MySqlLockStatementFormatter(), enableSchemaCaching)
+            : base(string.Empty, new MySqlLockStatementFormatter(), enableSchemaCaching)
         {
         }
     }

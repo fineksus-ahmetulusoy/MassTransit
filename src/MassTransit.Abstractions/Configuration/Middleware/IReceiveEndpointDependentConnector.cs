@@ -1,14 +1,12 @@
 namespace MassTransit
 {
-    using Transports;
-
-
-    public interface IReceiveEndpointDependentConnector
+    public interface IReceiveEndpointDependentConnector :
+        IReceiveEndpointObserverConnector
     {
         /// <summary>
-        /// Add the dependent to receive endpoint. Receive endpoint will be stopped when dependent is Completed
+        /// Add the observable receive endpoint as a dependency
         /// </summary>
-        /// <param name="dependent"></param>
-        void AddDependent(IReceiveEndpointDependent dependent);
+        /// <param name="dependency"></param>
+        void AddDependent(IReceiveEndpointObserverConnector dependency);
     }
 }

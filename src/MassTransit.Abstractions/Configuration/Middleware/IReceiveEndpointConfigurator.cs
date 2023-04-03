@@ -10,7 +10,6 @@ namespace MassTransit
     /// </summary>
     public interface IReceiveEndpointConfigurator :
         IEndpointConfigurator,
-        IReceiveEndpointObserverConnector,
         IReceiveEndpointDependencyConnector,
         IReceiveEndpointDependentConnector
     {

@@ -56,10 +56,7 @@
             if (_hostConfiguration.DeployTopologyOnly)
                 _sessionConfigurator.UseFilter(new TransportReadyFilter<SessionContext>(context));
             else
-            {
-                _sessionConfigurator.UseFilter(new ReceiveEndpointDependencyFilter<SessionContext>(context));
                 _sessionConfigurator.UseFilter(new ActiveMqConsumerFilter(context));
-            }
 
             IPipe<SessionContext> sessionPipe = _sessionConfigurator.Build();
 

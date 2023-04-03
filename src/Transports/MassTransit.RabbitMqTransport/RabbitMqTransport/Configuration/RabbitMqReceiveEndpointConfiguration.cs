@@ -71,7 +71,6 @@ namespace MassTransit.RabbitMqTransport.Configuration
                     _modelConfigurator.UseFilter(new PurgeOnStartupFilter(_settings.QueueName));
 
                 _modelConfigurator.UseFilter(new PrefetchCountFilter(_settings.PrefetchCount));
-                _modelConfigurator.UseFilter(new ReceiveEndpointDependencyFilter<ModelContext>(context));
                 _modelConfigurator.UseFilter(new RabbitMqConsumerFilter(context));
             }
 

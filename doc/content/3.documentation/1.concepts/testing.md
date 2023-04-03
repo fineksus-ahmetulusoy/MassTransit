@@ -1,145 +1,78 @@
 # Testing
 
-MassTransit is a highly asynchronous framework that builds on top of `Microsoft.Extensions.DependencyInjection` which enables high performance and flexibly message solutions. However, those choices can make unit testing more complex that your average test. To make it reduce this burden, MassTransit includes a [Test Harnesses](/documentation/configuration/test-harness) which enables a testing platform that runs entirely in memory.  
+MassTransit is a framework, and follows the Hollywood principle – don't call us, we'll call you. This inversion of control, combined with asynchronous execution, can complicate unit tests. To make it easy, MassTransit includes test harnesses to create unit tests that run entirely in-memory but behave close to an actual message broker. In fact, the included memory-based messaging fabric was inspired by RabbitMQ exchanges and queues.
 
-Since MassTransit is typically configured using `AddMassTransit` in combination with `Microsoft.Extensions.DependencyInjection` the test harness will override your existing MassTransit configuration with in-memory options suitable for testing.
+Since MassTransit is typically configured using `AddMassTransit`, the preferred testing approach is to use a `ServiceCollection` to configure the test combined with the test harness.
 
-## Features
+## Consumer 
 
-- Swaps `IBus` instances in place simplifying test configuration
-- Async in nature
-- Works with all dotnet testing frameworks
-
-## High Level Concepts
-
-Because MassTransit is an asynchronous framework, and its possible that a user may want to test the consumption of a message as well as any events that are being published as well, the test harness uses multiple timers to assist in coordinating the various assertions. Because of this, we need to create a new `TestHarness` instance for each test. It is therefore important that you not reuse an instance across a test. This means that you will have to create a new instance for each test.
+To test a consumer using container-based configuration:
 
 ```csharp
-[Test] 
-public async Task ASampleTest() 
-{
-    await using var provider = new ServiceCollection()
-        // register all of your normal business services
-        .AddYourBusinessServices()
-        // AddMassTransitTestHarness will override your 
-        // transport specific configuration with an in-memory
-        // option
-        .AddMassTransitTestHarness(cfg =>
-        {
-            cfg.AddConsumer<SubmitOrderConsumer>();
-        })
-        .BuildServiceProvider(true);
-
-    var harness = provider.GetRequiredService<ITestHarness>();
-
-    // you only want to call Start once
-    await harness.Start();
-
-    var client = harness.GetRequestClient<SubmitOrder>();
-
-    var response = await client.GetResponse<OrderSubmitted>(new
+await using var provider = new ServiceCollection()
+    .AddMassTransitTestHarness(cfg =>
     {
-        OrderId = InVar.Id,
-        OrderNumber = "123"
-    });
+        cfg.AddConsumer<SubmitOrderConsumer>();
+    })
+    .BuildServiceProvider(true);
 
-    Assert.IsTrue(await harness.Sent.Any<OrderSubmitted>());
+var harness = provider.GetRequiredService<ITestHarness>();
 
-    Assert.IsTrue(await harness.Consumed.Any<SubmitOrder>());
+await harness.Start();
 
-    var consumerHarness = harness.GetConsumerHarness<SubmitOrderConsumer>();
+var client = harness.GetRequestClient<SubmitOrder>();
 
-    Assert.That(await consumerHarness.Consumed.Any<SubmitOrder>());
+await client.GetResponse<OrderSubmitted>(new
+{
+    OrderId = InVar.Id,
+    OrderNumber = "123"
+});
 
-    // test side effects of the SubmitOrderConsumer here
-}
+Assert.IsTrue(await harness.Sent.Any<OrderSubmitted>());
+
+Assert.IsTrue(await harness.Consumed.Any<SubmitOrder>());
+
+var consumerHarness = harness.GetConsumerHarness<SubmitOrderConsumer>();
+
+Assert.That(await consumerHarness.Consumed.Any<SubmitOrder>());
 ```
 
-## Examples
+## Saga State Machine
 
-The following are examples of using the `TestHarness` to test various components.
-
-### Consumer 
-
-To test a consumer using the MassTransit Test Harness:
+To test a saga state machine using container-based configuration:
 
 ```csharp
-[Test]
-public async Task ASampleTest() 
-{
-    await using var provider = new ServiceCollection()
-        .AddMassTransitTestHarness(cfg =>
-        {
-            cfg.AddConsumer<SubmitOrderConsumer>();
-        })
-        .BuildServiceProvider(true);
-
-    var harness = provider.GetRequiredService<ITestHarness>();
-
-    await harness.Start();
-
-    var client = harness.GetRequestClient<SubmitOrder>();
-
-    await client.GetResponse<OrderSubmitted>(new
+await using var provider = new ServiceCollection()
+    .AddMassTransitTestHarness(cfg =>
     {
-        OrderId = InVar.Id,
-        OrderNumber = "123"
-    });
+        cfg.AddSagaStateMachine<OrderStateMachine, OrderState>();
+    })
+    .BuildServiceProvider(true);
 
-    Assert.IsTrue(await harness.Sent.Any<OrderSubmitted>());
+var harness = provider.GetRequiredService<ITestHarness>();
 
-    Assert.IsTrue(await harness.Consumed.Any<SubmitOrder>());
+await harness.Start();
 
-    var consumerHarness = harness.GetConsumerHarness<SubmitOrderConsumer>();
+var sagaId = Guid.NewGuid();
+var orderNumber = "ORDER123";
 
-    Assert.That(await consumerHarness.Consumed.Any<SubmitOrder>());
-
-    // test side effects of the SubmitOrderConsumer here
-}
-```
-
-### Saga State Machine
-
-To test a saga state machine using the MassTransit Test Harness:
-
-```csharp
-[Test]
-public async Task ASampleTest()
+await harness.Bus.Publish(new OrderSubmitted
 {
-    await using var provider = new ServiceCollection()
-        .AddMassTransitTestHarness(cfg =>
-        {
-            cfg.AddSagaStateMachine<OrderStateMachine, OrderState>();
-        })
-        .BuildServiceProvider(true);
+    CorrelationId = sagaId,
+    OrderNumber = orderNumber
+});
 
-    var harness = provider.GetRequiredService<ITestHarness>();
+Assert.That(await harness.Consumed.Any<OrderSubmitted>());
 
-    await harness.Start();
+var sagaHarness = harness.GetSagaStateMachineHarness<OrderStateMachine, OrderState>();
 
-    var sagaId = Guid.NewGuid();
-    var orderNumber = "ORDER123";
+Assert.That(await sagaHarness.Consumed.Any<OrderSubmitted>());
 
-    await harness.Bus.Publish(new OrderSubmitted
-    {
-        CorrelationId = sagaId,
-        OrderNumber = orderNumber
-    });
+Assert.That(await sagaHarness.Created.Any(x => x.CorrelationId == sagaId));
 
-    Assert.That(await harness.Consumed.Any<OrderSubmitted>());
+var instance = sagaHarness.Created.ContainsInState(sagaId, sagaHarness.StateMachine, sagaHarness.StateMachine.Submitted);
+Assert.IsNotNull(instance, "Saga instance not found");
+Assert.That(instance.OrderNumber, Is.EqualTo(orderNumber));
 
-    var sagaHarness = harness.GetSagaStateMachineHarness<OrderStateMachine, OrderState>();
-
-    Assert.That(await sagaHarness.Consumed.Any<OrderSubmitted>());
-
-    Assert.That(await sagaHarness.Created.Any(x => x.CorrelationId == sagaId));
-
-    var instance = sagaHarness.Created.ContainsInState(sagaId, sagaHarness.StateMachine, sagaHarness.StateMachine.Submitted);
-    Assert.IsNotNull(instance, "Saga instance not found");
-    Assert.That(instance.OrderNumber, Is.EqualTo(orderNumber));
-
-    Assert.IsTrue(await harness.Published.Any<OrderApprovalRequired>());
-
-    // test side effects of OrderState here
-}
+Assert.IsTrue(await harness.Published.Any<OrderApprovalRequired>());
 ```

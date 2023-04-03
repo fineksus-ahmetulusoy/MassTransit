@@ -193,7 +193,7 @@ namespace MassTransit.RabbitMqTransport
 
         protected override bool IsTrackable(ulong deliveryTag)
         {
-            return deliveryTag != 1 || _context.IsNotReplyTo;
+            return deliveryTag != 1;
         }
 
         Task OnConsumerCancelled(object obj, ConsumerEventArgs args)
