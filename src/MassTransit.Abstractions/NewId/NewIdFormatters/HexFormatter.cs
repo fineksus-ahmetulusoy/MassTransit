@@ -2,7 +2,7 @@
 {
     using System.Diagnostics;
     using System.Runtime.CompilerServices;
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
     using System;
     using System.Runtime.InteropServices;
     using System.Runtime.Intrinsics;
@@ -25,7 +25,7 @@
         {
             Debug.Assert(bytes.Length == 16);
 
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
             if (Avx2.IsSupported && BitConverter.IsLittleEndian)
             {
                 var isUpperCase = _alpha != LowerCaseUInt;

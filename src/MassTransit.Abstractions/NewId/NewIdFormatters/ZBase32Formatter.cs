@@ -2,7 +2,7 @@
 {
     using System.Runtime.CompilerServices;
     using System;
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
     using System.Runtime.Intrinsics.X86;
     using System.Runtime.Intrinsics;
 #endif
@@ -27,7 +27,7 @@
 
         public unsafe string Format(in byte[] bytes)
         {
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
             if (Avx2.IsSupported)
             {
                 return string.Create(26, (bytes, _isUpper), (span, state) =>
@@ -70,7 +70,7 @@
             }
         }
 
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EncodeKnownCase(ReadOnlySpan<byte> source, Span<char> destination, bool isUpperCase)
         {

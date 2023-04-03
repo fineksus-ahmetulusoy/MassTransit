@@ -1,7 +1,7 @@
 ﻿namespace MassTransit.NewIdFormatters
 {
     using System;
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
     using System.Runtime.InteropServices;
     using System.Runtime.Intrinsics;
     using System.Runtime.Intrinsics.X86;
@@ -17,7 +17,7 @@
 
         readonly string _chars;
         readonly bool _isUpperCase;
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
         readonly bool _isCustom;
         readonly Vector256<byte> _lower;
         readonly Vector256<byte> _upper;
@@ -35,7 +35,7 @@
 
             _chars = chars;
 
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
             if (Avx2.IsSupported && BitConverter.IsLittleEndian)
             {
                 _isCustom = true;
@@ -51,7 +51,7 @@
 
         public unsafe string Format(in byte[] bytes)
         {
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
             if (Avx2.IsSupported)
             {
                 if (_isCustom)
@@ -102,7 +102,7 @@
             }
         }
 
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EncodeKnown(ReadOnlySpan<byte> source, Span<char> destination, bool isUpperCase)
         {

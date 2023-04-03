@@ -24,7 +24,7 @@ namespace MassTransit.Internals
 
             async Task WaitAsync()
             {
-            #if NET6_0_OR_GREATER
+            #if NET7_0_OR_GREATER
                 await using var registration = RegisterTask(cancellationToken, out var cancelTask).ConfigureAwait(false);
             #else
                 using var registration = RegisterTask(cancellationToken, out var cancelTask);
@@ -56,7 +56,7 @@ namespace MassTransit.Internals
 
             async Task<T> WaitAsync()
             {
-            #if NET6_0_OR_GREATER
+            #if NET7_0_OR_GREATER
                 await using var registration = RegisterTask(cancellationToken, out var cancelTask).ConfigureAwait(false);
             #else
                 using var registration = RegisterTask(cancellationToken, out var cancelTask);
