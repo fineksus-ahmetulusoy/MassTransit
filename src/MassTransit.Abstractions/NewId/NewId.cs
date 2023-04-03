@@ -5,7 +5,7 @@ namespace MassTransit
     using System.Threading;
     using NewIdFormatters;
     using NewIdProviders;
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
     using System.Diagnostics;
     using System.Runtime.Intrinsics.X86;
     using System.Runtime.Intrinsics;
@@ -162,7 +162,7 @@ namespace MassTransit
         {
             var bytes = _formatterArray.Value!;
 
-        #if NET6_0_OR_GREATER
+        #if NET7_0_OR_GREATER
             if (Ssse3.IsSupported && BitConverter.IsLittleEndian)
             {
                 Vector128<byte> vector = Unsafe.As<NewId, Vector128<byte>>(ref Unsafe.AsRef(in this));
@@ -197,7 +197,7 @@ namespace MassTransit
         {
             var bytes = _formatterArray.Value!;
 
-        #if NET6_0_OR_GREATER
+        #if NET7_0_OR_GREATER
             if (Ssse3.IsSupported && BitConverter.IsLittleEndian)
             {
                 Vector128<byte> vector = Unsafe.As<NewId, Vector128<byte>>(ref Unsafe.AsRef(in this));
@@ -230,7 +230,7 @@ namespace MassTransit
 
         public Guid ToGuid()
         {
-        #if NET6_0_OR_GREATER
+        #if NET7_0_OR_GREATER
             if (Ssse3.IsSupported && BitConverter.IsLittleEndian)
             {
                 Vector128<byte> bytes = Unsafe.As<NewId, Vector128<byte>>(ref Unsafe.AsRef(in this));
@@ -256,7 +256,7 @@ namespace MassTransit
 
         public Guid ToSequentialGuid()
         {
-        #if NET6_0_OR_GREATER
+        #if NET7_0_OR_GREATER
             if (Ssse3.IsSupported && BitConverter.IsLittleEndian)
             {
                 Vector128<byte> bytes = Unsafe.As<NewId, Vector128<byte>>(ref Unsafe.AsRef(in this));
@@ -296,7 +296,7 @@ namespace MassTransit
         {
             var bytes = new byte[16];
 
-        #if NET6_0_OR_GREATER
+        #if NET7_0_OR_GREATER
             if (Ssse3.IsSupported && BitConverter.IsLittleEndian)
             {
                 Vector128<byte> vector = Unsafe.As<NewId, Vector128<byte>>(ref Unsafe.AsRef(in this));
@@ -503,7 +503,7 @@ namespace MassTransit
             return _getGenerator().NextSequentialGuid();
         }
 
-    #if NET6_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+    #if NET7_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static void FromGuid(in Guid guid, out NewId newId)
         {
@@ -515,7 +515,7 @@ namespace MassTransit
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static void FromByteArray(ReadOnlySpan<byte> bytes, out NewId newId)
         {
-        #if NET6_0_OR_GREATER
+        #if NET7_0_OR_GREATER
             if (Ssse3.IsSupported && BitConverter.IsLittleEndian)
             {
                 var vector = MemoryMarshal.Read<Vector128<byte>>(bytes);
@@ -538,7 +538,7 @@ namespace MassTransit
         {
             Span<byte> bytes = stackalloc byte[16];
             guid.TryWriteBytes(bytes);
-        #if NET6_0_OR_GREATER
+        #if NET7_0_OR_GREATER
             if (Ssse3.IsSupported && BitConverter.IsLittleEndian)
             {
                 var vector = MemoryMarshal.Read<Vector128<byte>>(bytes);

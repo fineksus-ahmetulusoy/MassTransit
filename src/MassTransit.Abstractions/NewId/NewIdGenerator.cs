@@ -2,7 +2,7 @@
 {
     using System;
     using System.Threading;
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
     using System.Runtime.CompilerServices;
     using System.Runtime.Intrinsics;
     using System.Runtime.Intrinsics.X86;
@@ -92,7 +92,7 @@
             // swapping high and low byte, because SQL-server is doing the wrong ordering otherwise
             var sequenceSwapped = ((sequence << 8) | ((sequence >> 8) & 0x00FF)) & 0xFFFF;
 
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
             if (Ssse3.IsSupported && BitConverter.IsLittleEndian)
             {
                 var vec = Vector128.Create((int)a, b, _c, _d | sequenceSwapped);
@@ -128,7 +128,7 @@
             var sequence = _sequence++;
 
             var a = _a;
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
             var v = _b;
 #endif
             var b = (short)(_b >> 16);
@@ -140,7 +140,7 @@
             // swapping high and low byte, because SQL-server is doing the wrong ordering otherwise
             var sequenceSwapped = ((sequence << 8) | ((sequence >> 8) & 0x00FF)) & 0xFFFF;
 
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
             if (Ssse3.IsSupported && BitConverter.IsLittleEndian)
             {
                 var vec = Vector128.Create((int)a, v, _c, _d | sequenceSwapped);
@@ -197,7 +197,7 @@
 
             var ticks = _tickProvider.Ticks;
 
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
             var v = _b;
 #endif
             var a = _a;
@@ -222,7 +222,7 @@
                 {
                     UpdateTimestamp(_lastTick + 1);
 
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
                     v = _b;
 #endif
                     a = _a;
@@ -235,7 +235,7 @@
                 // swapping high and low byte, because SQL-server is doing the wrong ordering otherwise
                 var sequenceSwapped = ((sequence << 8) | ((sequence >> 8) & 0x00FF)) & 0xFFFF;
 
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
                 if (Ssse3.IsSupported && BitConverter.IsLittleEndian)
                 {
                     var vec = Vector128.Create((int)a, v, _c, _d | sequenceSwapped);

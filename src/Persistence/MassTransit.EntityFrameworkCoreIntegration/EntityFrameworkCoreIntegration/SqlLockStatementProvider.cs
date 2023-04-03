@@ -81,7 +81,7 @@ namespace MassTransit.EntityFrameworkCoreIntegration
             {
                 var property = entityType.GetProperties().Single(x => x.Name.Equals(propertyNames[i], StringComparison.OrdinalIgnoreCase));
 
-            #if NETSTANDARD2_0
+            #if NETSTANDARD2_1
                 var columnName = property.GetColumnName();
             #else
                 var storeObjectIdentifier = StoreObjectIdentifier.Table(tableName, schema);

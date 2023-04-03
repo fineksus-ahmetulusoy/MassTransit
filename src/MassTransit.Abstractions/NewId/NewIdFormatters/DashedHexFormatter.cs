@@ -1,7 +1,7 @@
 ﻿namespace MassTransit.NewIdFormatters
 {
     using System;
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
     using System.Runtime.InteropServices;
     using System.Runtime.CompilerServices;
     using System.Runtime.Intrinsics;
@@ -34,7 +34,7 @@
 
         public unsafe string Format(in byte[] bytes)
         {
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
             if (Avx2.IsSupported && BitConverter.IsLittleEndian)
             {
                 var isUpperCase = _alpha != LowerCaseUInt;
@@ -95,7 +95,7 @@
             return new string(result, 0, _length);
         }
 
-#if NET6_0_OR_GREATER
+#if NET7_0_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EncodeVector256(Span<char> span, (byte[] bytes, bool, char _prefix, char _suffix) state)
         {
