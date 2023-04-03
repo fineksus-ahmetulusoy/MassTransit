@@ -14,11 +14,12 @@ Get started by [reading through the documentation](https://masstransit-project.c
 Build Status
 ------------
 
-| Branch        |                                                                                                Status                                                                                                |
-|---------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| master        |    [![master](https://github.com/MassTransit/MassTransit/actions/workflows/build.yml/badge.svg?branch=master&event=push)](https://github.com/MassTransit/MassTransit/actions/workflows/build.yml)    |
-| develop       |   [![develop](https://github.com/MassTransit/MassTransit/actions/workflows/build.yml/badge.svg?branch=develop&event=push)](https://github.com/MassTransit/MassTransit/actions/workflows/build.yml)   |
-| documentation | [![documentation](https://github.com/MassTransit/MassTransit/actions/workflows/docs.yml/badge.svg?branch=develop&event=push)](https://github.com/MassTransit/MassTransit/actions/workflows/docs.yml) |
+| Branch        |                                                                                                Status                                                                                                      |
+|---------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| master        |    [![master](https://github.com/MassTransit/MassTransit/actions/workflows/build.yml/badge.svg?branch=master&event=push)](https://github.com/MassTransit/MassTransit/actions/workflows/build.yml)          |
+| develop       |   [![develop](https://github.com/MassTransit/MassTransit/actions/workflows/build.yml/badge.svg?branch=develop&event=push)](https://github.com/MassTransit/MassTransit/actions/workflows/build.yml)         |
+| documentation | [![documentation](https://github.com/MassTransit/MassTransit/actions/workflows/docs.yml/badge.svg?branch=develop&event=push)](https://github.com/MassTransit/MassTransit/actions/workflows/docs.yml)       |
+| net7.0        | [![MassTransit](https://github.com/fineksus-ahmetulusoy/MassTransit/actions/workflows/build.yml/badge.svg?branch=net7.0)](https://github.com/fineksus-ahmetulusoy/MassTransit/actions/workflows/build.yml) |
 
 MassTransit NuGet Packages
 ---------------------------
